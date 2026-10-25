@@ -1,0 +1,72 @@
+plugins {
+    id 'java-library'
+    id 'idea'
+}
+
+version = mod_version
+group = mod_group_id
+
+base {
+    archivesName = "${mod_id}-${project.name}-${minecraft_version}"
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+repositories {
+    mavenCentral()
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Sponge'
+                url = 'https://repo.spongepowered.org/repository/maven-public'
+            }
+        }
+        filter { includeGroupAndSubgroups('org.spongepowered') }
+    }
+}
+
+['apiElements', 'runtimeElements'].each { variant ->
+    configurations."$variant".outgoing {
+        capability("$group:${base.archivesName.get()}:$version")
+        capability("$group:$mod_id:$version")
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+jar {
+    var licenseName = "LICENSE_${mod_id}"
+    from(rootProject.file('LICENSE')) {
+        rename { licenseName }
+    }
+}
+
+processResources {
+    var expandProps = [
+            mod_id                        : mod_id,
+            mod_name                      : mod_name,
+            mod_version                   : mod_version,
+            mod_license                   : mod_license,
+            minecraft_version_range       : minecraft_version_range,
+            loader_version_range          : loader_version_range,
+            neo_version_range             : neo_version_range,
+            fabric_loader_version_range   : fabric_loader_version_range,
+            fabric_api_version_range      : fabric_api_version_range,
+            fabric_minecraft_version_range: fabric_minecraft_version_range,
+            forge_version_range           : forge_version_range,
+            forge_loader_version_range    : forge_loader_version_range,
+    ]
+    inputs.properties(expandProps)
+    filesMatching(['META-INF/neoforge.mods.toml', 'META-INF/mods.toml', 'fabric.mod.json']) {
+        expand expandProps
+    }
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}
