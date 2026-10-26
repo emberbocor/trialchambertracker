@@ -87,7 +87,7 @@ public final class TrackerLabels {
         Vec3 cameraPos = camera.pos;
         poseStack.pushPose();
         poseStack.translate(pos.getX() + 0.5 - cameraPos.x, pos.getY() + LABEL_HEIGHT - cameraPos.y, pos.getZ() + 0.5 - cameraPos.z);
-        poseStack.mulPose(camera.orientation);
+        poseStack.rotate(camera.orientation);
         poseStack.scale(TEXT_SCALE, -TEXT_SCALE, TEXT_SCALE);
         int background = (int) (minecraft.options.getBackgroundOpacity(0.25F) * 255.0F) << 24;
         float x = -font.width(text) / 2.0F;

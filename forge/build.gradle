@@ -12,10 +12,10 @@ minecraft {
             systemProperty 'forge.logging.console.level', 'debug'
         }
         register('client') {
-            workingDir = rootProject.layout.projectDirectory.dir('runs/26.2/forge-client')
+            workingDir = rootProject.layout.projectDirectory.dir('runs/26.3/forge-client')
         }
         register('server') {
-            workingDir = rootProject.layout.projectDirectory.dir('runs/26.2/forge-server')
+            workingDir = rootProject.layout.projectDirectory.dir('runs/26.3/forge-server')
             args '--nogui'
         }
     }
