@@ -41,15 +41,15 @@ Servers only send part of the trial spawner and vault data to the client. The mo
 
 | | NeoForge | Forge | Fabric |
 |---|---|---|---|
-| Minecraft | 26.1-26.1.2 | 26.1-26.1.2 | 26.1-26.1.2 |
+| Minecraft | 26.2 | 26.2 | 26.2 |
 | Java | 25 | 25 | 25 |
-| Loader | NeoForge 26.1.0.1-beta or newer | Forge 62.0.0 or newer | Fabric Loader 0.18.4 or newer |
-| Other | | | Fabric API 0.144.0 or newer |
-| Jar | `trialchambertracker-neoforge-26.1-26.1.2-<version>.jar` | `trialchambertracker-forge-26.1-26.1.2-<version>.jar` | `trialchambertracker-fabric-26.1-26.1.2-<version>.jar` |
+| Loader | NeoForge 26.2.0.0-beta or newer | Forge 65.0.0 or newer | Fabric Loader 0.18.4 or newer |
+| Other | | | Fabric API 0.152.1 or newer |
+| Jar | `trialchambertracker-neoforge-26.2-<version>.jar` | `trialchambertracker-forge-26.2-<version>.jar` | `trialchambertracker-fabric-26.2-<version>.jar` |
 
-On Minecraft 26.1-26.1.2, NeoForge and Forge are separate loaders that do not run each other's mods, so each has its own jar. Pick the jar that matches your loader.
+On Minecraft 26.2, NeoForge and Forge are separate loaders that do not run each other's mods, so each has its own jar. Pick the jar that matches your loader.
 
-Use the loader build for your Minecraft version. NeoForge builds for 26.1 and 26.1.1 are betas. Forge uses series 62 for 26.1, 63 for 26.1.1 and 64 for 26.1.2. Each mod jar supports all three Minecraft versions.
+Use the loader build for Minecraft 26.2. Forge uses series 65.
 
 ### Client and server
 
@@ -96,9 +96,9 @@ Singleplayer worlds are identified by their folder name in `saves/`, servers by 
 - Works with any mod that keeps the vanilla trial spawner and vault blocks. Trial spawners and vaults added by other mods as different blocks get no labels.
 - Mods or server plugins that reset vaults or change cooldowns are handled by the self-correction described above; a changed cooldown length is learned as described under "Cooldown timer".
 
-### Upgrading a world from 1.21.11
+### Upgrading a world from 26.1
 
-Use Java 25 and the 26.1-26.1.2 jar for your loader. Keep `config/trialchambertracker-client.json` and the `trialchambertracker/` folder in the same game folder: their format is unchanged. A world kept under the same save folder name, or a server reached through the same address, keeps its learned cooldown length, known cooldown starts and opened vaults.
+Use Java 25 and the 26.2 jar for your loader. Keep `config/trialchambertracker-client.json` and the `trialchambertracker/` folder in the same game folder: their format is unchanged. A world kept under the same save folder name, or a server reached through the same address, keeps its learned cooldown length, known cooldown starts and opened vaults.
 
 ## Building from source
 

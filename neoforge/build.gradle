@@ -7,7 +7,7 @@ neoForge {
     version = neo_version
     runs {
         configureEach {
-            gameDirectory = rootProject.file('runs/26.1/neoforge')
+            gameDirectory = rootProject.file('runs/26.2/neoforge')
             ideName = "NeoForge ${it.name.capitalize()} (${project.path})"
             systemProperty 'forge.logging.markers', 'REGISTRIES'
             logLevel = org.slf4j.event.Level.DEBUG

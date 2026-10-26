@@ -38,7 +38,7 @@ public final class TrackerLabels {
     }
 
     public static void render(Level level, CameraRenderState camera, SubmitNodeCollector nodeCollector) {
-        if (!Minecraft.renderNames() || !TrackerSession.isTracking(level)) {
+        if (Minecraft.getInstance().gui.hud.isHidden() || !TrackerSession.isTracking(level)) {
             return;
         }
         PoseStack poseStack = new PoseStack();
