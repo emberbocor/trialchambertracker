@@ -13,7 +13,7 @@ import io.github.emberbocor.trialchambertracker.render.TrackerLabels;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeStorage;
-import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
 
 @Mixin(LevelRenderer.class)
 public abstract class LevelRendererMixin {

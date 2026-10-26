@@ -1,28 +1,12 @@
 plugins {
     id 'multiloader-loader'
-    id 'fabric-loom'
-}
-
-repositories {
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = 'ParchmentMC'
-                url = 'https://maven.parchmentmc.org'
-            }
-        }
-        filter { includeGroup('org.parchmentmc.data') }
-    }
+    id 'net.fabricmc.fabric-loom'
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${parchment_minecraft_version}:${parchment_mappings_version}@zip")
-    }
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modRuntimeOnly "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
 }
 
 loom {
@@ -31,13 +15,13 @@ loom {
             client()
             configName = 'Fabric Client'
             ideConfigGenerated(true)
-            runDir('../runs/1.21.11/fabric-client')
+            runDir('../runs/26.1/fabric-client')
         }
         server {
             server()
             configName = 'Fabric Server'
             ideConfigGenerated(true)
-            runDir('../runs/1.21.11/fabric-server')
+            runDir('../runs/26.1/fabric-server')
         }
     }
 }

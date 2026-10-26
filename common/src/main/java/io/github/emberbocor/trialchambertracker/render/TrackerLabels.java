@@ -10,11 +10,11 @@ import io.github.emberbocor.trialchambertracker.config.ClientConfig;
 import io.github.emberbocor.trialchambertracker.tracker.TrackerSession;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.TrialSpawnerBlock;
 import net.minecraft.world.level.block.VaultBlock;
@@ -93,12 +93,12 @@ public final class TrackerLabels {
         float x = -font.width(text) / 2.0F;
         if (ClientConfig.showThroughBlocks()) {
             nodeCollector.submitText(poseStack, x, 0.0F, text.getVisualOrderText(), false, Font.DisplayMode.SEE_THROUGH,
-                    LightTexture.FULL_BRIGHT, color & 0xFFFFFF | SEE_THROUGH_ALPHA, background, 0);
+                    LightCoordsUtil.FULL_BRIGHT, color & 0xFFFFFF | SEE_THROUGH_ALPHA, background, 0);
             nodeCollector.submitText(poseStack, x, 0.0F, text.getVisualOrderText(), false, Font.DisplayMode.NORMAL,
-                    LightTexture.FULL_BRIGHT, color, 0, 0);
+                    LightCoordsUtil.FULL_BRIGHT, color, 0, 0);
         } else {
             nodeCollector.submitText(poseStack, x, 0.0F, text.getVisualOrderText(), false, Font.DisplayMode.NORMAL,
-                    LightTexture.FULL_BRIGHT, color, background, 0);
+                    LightCoordsUtil.FULL_BRIGHT, color, background, 0);
         }
         poseStack.popPose();
     }

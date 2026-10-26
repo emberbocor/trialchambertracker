@@ -4,7 +4,7 @@ plugins {
 }
 
 minecraft {
-    mappings channel: 'official', version: minecraft_version
+    mappings channel: 'official', version: forge_minecraft_version
     runs {
         configureEach {
             args "--mixin.config=${mod_id}.mixins.json"
@@ -12,10 +12,10 @@ minecraft {
             systemProperty 'forge.logging.console.level', 'debug'
         }
         register('client') {
-            workingDir = rootProject.layout.projectDirectory.dir('runs/1.21.11/forge-client')
+            workingDir = rootProject.layout.projectDirectory.dir('runs/26.1/forge-client')
         }
         register('server') {
-            workingDir = rootProject.layout.projectDirectory.dir('runs/1.21.11/forge-server')
+            workingDir = rootProject.layout.projectDirectory.dir('runs/26.1/forge-server')
             args '--nogui'
         }
     }
@@ -28,7 +28,7 @@ repositories {
 }
 
 dependencies {
-    implementation minecraft.dependency("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
+    implementation minecraft.dependency("net.minecraftforge:forge:${forge_minecraft_version}-${forge_version}")
 }
 
 tasks.named('jar', Jar) {

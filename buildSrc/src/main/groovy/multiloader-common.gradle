@@ -7,10 +7,10 @@ version = mod_version
 group = mod_group_id
 
 base {
-    archivesName = "${mod_id}-${project.name}-${minecraft_version}"
+    archivesName = "${mod_id}-${project.name}-${minecraft_label}"
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 repositories {
     mavenCentral()
@@ -49,12 +49,12 @@ processResources {
             mod_name                      : mod_name,
             mod_version                   : mod_version,
             mod_license                   : mod_license,
-            minecraft_version             : minecraft_version,
             minecraft_version_range       : minecraft_version_range,
             loader_version_range          : loader_version_range,
             neo_version_range             : neo_version_range,
             fabric_loader_version_range   : fabric_loader_version_range,
             fabric_api_version_range      : fabric_api_version_range,
+            fabric_minecraft_version_range: fabric_minecraft_version_range,
             forge_version_range           : forge_version_range,
             forge_loader_version_range    : forge_loader_version_range,
     ]
