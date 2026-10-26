@@ -31,8 +31,11 @@ Servers only send part of the trial spawner and vault data to the client. The mo
 
 ### Vault markers
 
-- A vanilla server tells clients which players near a vault (about 4 blocks) can still open it. The mod reads that list for you only: when you stand within 3.5 blocks of a vault for a moment and you are not on the list, you have opened it; when you are on the list, you have not.
-- So a vault is marked as opened right after you open it, and also when you walk up to a vault that you opened before installing the mod.
+- A vanilla server tells clients which players near a vault (about 4 blocks) can still open it. The mod reads that list for you only: when you are on the list, the vault is `Ready` for you.
+- When the vault accepts your key, the server takes you off that list in the same moment the vault starts unlocking. The mod sees both and marks the vault `Opened` right away, so you can leave immediately and do not have to wait for the reward.
+- A vault you opened before installing the mod is found the old way: walk up to it (within 3.5 blocks) and wait a moment (about 2.5 seconds). You are not on the list, so it is marked `Opened`.
+- The immediate marking needs you to be on the list (within about 4.5 blocks of the vault) when you use the key, and the mod has to see the vault the whole time. If you use the key from farther away, or the vault's chunk was only just loaded, the vault is marked the old way the next time you stand near it.
+- In the rare case that you step out of the list's range and straight back in at the very moment another player opens the same vault, the vault can be marked `Opened` for you too. It goes back to `Ready` as soon as the server puts you back on the list, which happens when you are near it after the reward has been ejected.
 - From farther away the server sends nothing about vaults, so the label shows what was saved. A vault you have never been close to shows `Ready`.
 - Spectators are never on the list, so nothing is changed while you are in spectator mode.
 - Opened vaults are saved per player, so several accounts can share one game folder.
