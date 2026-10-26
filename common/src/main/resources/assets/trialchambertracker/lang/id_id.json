@@ -3,8 +3,8 @@
   "trialchambertracker.spawner.cooldown.unknown": "Jeda",
   "trialchambertracker.spawner.ominous_cooldown": "Jeda ominous %s",
   "trialchambertracker.spawner.ominous_cooldown.unknown": "Jeda ominous",
+  "trialchambertracker.vault.ready": "Siap",
   "trialchambertracker.vault.opened": "Sudah dibuka",
-  "trialchambertracker.vault.not_opened": "Belum dibuka",
-  "trialchambertracker.vault.ominous_opened": "Ominous: sudah dibuka",
-  "trialchambertracker.vault.ominous_not_opened": "Ominous: belum dibuka"
+  "trialchambertracker.vault.ominous_ready": "Ominous: siap",
+  "trialchambertracker.vault.ominous_opened": "Ominous: sudah dibuka"
 }

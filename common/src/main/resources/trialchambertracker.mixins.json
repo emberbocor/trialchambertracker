@@ -5,10 +5,9 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
   "client": [
+    "LevelRendererMixin",
     "TrialSpawnerMixin",
-    "TrialSpawnerRendererMixin",
     "VaultClientMixin",
-    "VaultRendererMixin",
     "VaultSharedDataAccessor"
   ],
   "injectors": {

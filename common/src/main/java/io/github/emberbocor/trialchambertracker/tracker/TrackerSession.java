@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -16,8 +17,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.trialspawner.TrialSpawnerState;
 import net.minecraft.world.level.block.entity.vault.VaultState;
+import net.minecraft.world.phys.Vec3;
 
 public final class TrackerSession {
+    private static final double NEAR_DISTANCE = 32.0;
     private static final SpawnerTracker SPAWNERS = new SpawnerTracker();
     private static final VaultTracker VAULTS = new VaultTracker();
 
@@ -42,8 +45,18 @@ public final class TrackerSession {
 
     public static void observeSpawner(Level level, BlockPos pos, TrialSpawnerState state) {
         if (isTracking(level)) {
-            SPAWNERS.observe(store, dimension(level), pos, state, level.getGameTime());
+            LocalPlayer player = Minecraft.getInstance().player;
+            boolean playerNear = player != null && player.distanceToSqr(Vec3.atCenterOf(pos)) <= NEAR_DISTANCE * NEAR_DISTANCE;
+            SPAWNERS.observe(store, dimension(level), pos, state, playerNear, level.getGameTime());
         }
+    }
+
+    public static void forEachSpawner(Level level, Consumer<BlockPos> action) {
+        SPAWNERS.forEachVisible(level.getGameTime(), pos -> action.accept(BlockPos.of(pos)));
+    }
+
+    public static void forEachVault(Level level, Consumer<BlockPos> action) {
+        VAULTS.forEachVisible(level.getGameTime(), pos -> action.accept(BlockPos.of(pos)));
     }
 
     public static OptionalLong spawnerCooldownLeft(Level level, BlockPos pos) {

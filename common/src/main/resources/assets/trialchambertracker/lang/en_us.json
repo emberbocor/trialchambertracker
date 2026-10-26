@@ -3,8 +3,8 @@
   "trialchambertracker.spawner.cooldown.unknown": "Cooldown",
   "trialchambertracker.spawner.ominous_cooldown": "Ominous cooldown %s",
   "trialchambertracker.spawner.ominous_cooldown.unknown": "Ominous cooldown",
+  "trialchambertracker.vault.ready": "Ready",
   "trialchambertracker.vault.opened": "Opened",
-  "trialchambertracker.vault.not_opened": "Not opened",
-  "trialchambertracker.vault.ominous_opened": "Ominous: opened",
-  "trialchambertracker.vault.ominous_not_opened": "Ominous: not opened"
+  "trialchambertracker.vault.ominous_ready": "Ominous: ready",
+  "trialchambertracker.vault.ominous_opened": "Ominous: opened"
 }

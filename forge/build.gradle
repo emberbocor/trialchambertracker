@@ -7,7 +7,7 @@ minecraft {
     mappings channel: 'official', version: forge_minecraft_version
     runs {
         configureEach {
-            args "--mixin.config=${mod_id}.mixins.json", "--mixin.config=${mod_id}.forge.mixins.json"
+            args "--mixin.config=${mod_id}.mixins.json"
             systemProperty 'forge.logging.markers', 'REGISTRIES'
             systemProperty 'forge.logging.console.level', 'debug'
         }
@@ -32,5 +32,5 @@ dependencies {
 }
 
 tasks.named('jar', Jar) {
-    manifest.attributes(['MixinConfigs': "${mod_id}.mixins.json,${mod_id}.forge.mixins.json"])
+    manifest.attributes(['MixinConfigs': "${mod_id}.mixins.json"])
 }

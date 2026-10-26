@@ -16,9 +16,6 @@ Shows trial spawner cooldowns and which vaults you have opened. Client-side only
 [[mixins]]
 config="${mod_id}.mixins.json"
 
-[[mixins]]
-config="${mod_id}.neoforge.mixins.json"
-
 [[dependencies.${mod_id}]]
     modId="neoforge"
     type="required"

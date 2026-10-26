@@ -22,16 +22,18 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import net.minecraft.core.BlockPos;
 
 final class TrackerStore {
+    private static final String COOLDOWN_LENGTH = "cooldownLength";
     private static final String DIMENSIONS = "dimensions";
     private static final String COOLDOWNS = "cooldowns";
     private static final String OPENED_VAULTS = "openedVaults";
     private static final String POS = "pos";
-    private static final String ENDS_AT = "endsAt";
+    private static final String STARTED_AT = "startedAt";
 
     @Nullable
     private final Path file;
     private final Map<String, Long2LongMap> cooldowns = new HashMap<>();
     private final Map<String, Map<UUID, LongSet>> openedVaults = new HashMap<>();
+    private OptionalLong cooldownLength = OptionalLong.empty();
 
     private TrackerStore(@Nullable Path file) {
         this.file = file;
@@ -51,29 +53,41 @@ final class TrackerStore {
                     TrialChamberTracker.LOGGER.warn("Ignoring invalid data in {}: {}", file, e.getMessage());
                     store.cooldowns.clear();
                     store.openedVaults.clear();
+                    store.cooldownLength = OptionalLong.empty();
                 }
             });
         }
         return store;
     }
 
-    OptionalLong cooldownEnd(String dimension, BlockPos pos) {
-        Long2LongMap ends = cooldowns.get(dimension);
-        return ends != null && ends.containsKey(pos.asLong()) ? OptionalLong.of(ends.get(pos.asLong())) : OptionalLong.empty();
+    OptionalLong cooldownLength() {
+        return cooldownLength;
     }
 
-    void setCooldownEnd(String dimension, BlockPos pos, long endsAt) {
-        Long2LongMap ends = cooldowns.computeIfAbsent(dimension, key -> new Long2LongOpenHashMap());
-        if (!ends.containsKey(pos.asLong()) || ends.get(pos.asLong()) != endsAt) {
-            ends.put(pos.asLong(), endsAt);
+    void setCooldownLength(long length) {
+        if (cooldownLength.isEmpty() || cooldownLength.getAsLong() != length) {
+            cooldownLength = OptionalLong.of(length);
+            save();
+        }
+    }
+
+    OptionalLong cooldownStart(String dimension, BlockPos pos) {
+        Long2LongMap starts = cooldowns.get(dimension);
+        return starts != null && starts.containsKey(pos.asLong()) ? OptionalLong.of(starts.get(pos.asLong())) : OptionalLong.empty();
+    }
+
+    void setCooldownStart(String dimension, BlockPos pos, long startedAt) {
+        Long2LongMap starts = cooldowns.computeIfAbsent(dimension, key -> new Long2LongOpenHashMap());
+        if (!starts.containsKey(pos.asLong()) || starts.get(pos.asLong()) != startedAt) {
+            starts.put(pos.asLong(), startedAt);
             save();
         }
     }
 
     void removeCooldown(String dimension, BlockPos pos) {
-        Long2LongMap ends = cooldowns.get(dimension);
-        if (ends != null && ends.containsKey(pos.asLong())) {
-            ends.remove(pos.asLong());
+        Long2LongMap starts = cooldowns.get(dimension);
+        if (starts != null && starts.containsKey(pos.asLong())) {
+            starts.remove(pos.asLong());
             save();
         }
     }
@@ -98,6 +112,9 @@ final class TrackerStore {
     }
 
     private void read(JsonObject json) {
+        if (json.has(COOLDOWN_LENGTH)) {
+            cooldownLength = OptionalLong.of(json.get(COOLDOWN_LENGTH).getAsLong());
+        }
         JsonObject dimensions = json.getAsJsonObject(DIMENSIONS);
         if (dimensions == null) {
             return;
@@ -106,10 +123,10 @@ final class TrackerStore {
             JsonObject data = dimension.getValue().getAsJsonObject();
             JsonArray spawners = data.getAsJsonArray(COOLDOWNS);
             if (spawners != null) {
-                Long2LongMap ends = cooldowns.computeIfAbsent(dimension.getKey(), key -> new Long2LongOpenHashMap());
+                Long2LongMap starts = cooldowns.computeIfAbsent(dimension.getKey(), key -> new Long2LongOpenHashMap());
                 for (JsonElement element : spawners) {
                     JsonObject spawner = element.getAsJsonObject();
-                    ends.put(readPos(spawner.getAsJsonArray(POS)), spawner.get(ENDS_AT).getAsLong());
+                    starts.put(readPos(spawner.getAsJsonArray(POS)), spawner.get(STARTED_AT).getAsLong());
                 }
             }
             JsonObject vaults = data.getAsJsonObject(OPENED_VAULTS);
@@ -130,15 +147,15 @@ final class TrackerStore {
             return;
         }
         JsonObject dimensions = new JsonObject();
-        cooldowns.forEach((dimension, ends) -> {
-            if (ends.isEmpty()) {
+        cooldowns.forEach((dimension, starts) -> {
+            if (starts.isEmpty()) {
                 return;
             }
             JsonArray spawners = new JsonArray();
-            for (Long2LongMap.Entry entry : ends.long2LongEntrySet()) {
+            for (Long2LongMap.Entry entry : starts.long2LongEntrySet()) {
                 JsonObject spawner = new JsonObject();
                 spawner.add(POS, writePos(entry.getLongKey()));
-                spawner.addProperty(ENDS_AT, entry.getLongValue());
+                spawner.addProperty(STARTED_AT, entry.getLongValue());
                 spawners.add(spawner);
             }
             dimensionData(dimensions, dimension).add(COOLDOWNS, spawners);
@@ -157,6 +174,7 @@ final class TrackerStore {
             }
         });
         JsonObject json = new JsonObject();
+        cooldownLength.ifPresent(length -> json.addProperty(COOLDOWN_LENGTH, length));
         json.add(DIMENSIONS, dimensions);
         JsonConfigFile.write(file, json);
     }
