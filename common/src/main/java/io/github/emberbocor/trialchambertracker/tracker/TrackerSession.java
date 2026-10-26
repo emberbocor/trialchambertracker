@@ -95,6 +95,6 @@ public final class TrackerSession {
     }
 
     private static String dimension(Level level) {
-        return level.dimension().location().toString();
+        return level.dimension().identifier().toString();
     }
 }

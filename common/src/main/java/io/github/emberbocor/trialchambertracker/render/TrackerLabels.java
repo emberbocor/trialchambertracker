@@ -8,11 +8,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.emberbocor.trialchambertracker.TrialChamberTracker;
 import io.github.emberbocor.trialchambertracker.config.ClientConfig;
 import io.github.emberbocor.trialchambertracker.tracker.TrackerSession;
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
@@ -37,20 +37,20 @@ public final class TrackerLabels {
     private TrackerLabels() {
     }
 
-    public static void render(Level level, Camera camera, MultiBufferSource bufferSource) {
+    public static void render(Level level, CameraRenderState camera, SubmitNodeCollector nodeCollector) {
         if (!Minecraft.renderNames() || !TrackerSession.isTracking(level)) {
             return;
         }
         PoseStack poseStack = new PoseStack();
         if (ClientConfig.showSpawnerTimers()) {
-            TrackerSession.forEachSpawner(level, pos -> renderSpawner(level, pos, camera, poseStack, bufferSource));
+            TrackerSession.forEachSpawner(level, pos -> renderSpawner(level, pos, camera, poseStack, nodeCollector));
         }
         if (ClientConfig.showVaultMarkers()) {
-            TrackerSession.forEachVault(level, pos -> renderVault(level, pos, camera, poseStack, bufferSource));
+            TrackerSession.forEachVault(level, pos -> renderVault(level, pos, camera, poseStack, nodeCollector));
         }
     }
 
-    private static void renderSpawner(Level level, BlockPos pos, Camera camera, PoseStack poseStack, MultiBufferSource bufferSource) {
+    private static void renderSpawner(Level level, BlockPos pos, CameraRenderState camera, PoseStack poseStack, SubmitNodeCollector nodeCollector) {
         BlockState state = level.getBlockState(pos);
         if (!state.hasProperty(TrialSpawnerBlock.STATE) || state.getValue(TrialSpawnerBlock.STATE) != TrialSpawnerState.COOLDOWN
                 || !isInRange(pos, camera)) {
@@ -61,10 +61,10 @@ public final class TrackerLabels {
         Component text = left.isPresent()
                 ? Component.translatable(key, formatTicks(left.getAsLong()))
                 : Component.translatable(key + ".unknown");
-        draw(poseStack, bufferSource, camera, pos, text, COOLDOWN_COLOR);
+        draw(poseStack, nodeCollector, camera, pos, text, COOLDOWN_COLOR);
     }
 
-    private static void renderVault(Level level, BlockPos pos, Camera camera, PoseStack poseStack, MultiBufferSource bufferSource) {
+    private static void renderVault(Level level, BlockPos pos, CameraRenderState camera, PoseStack poseStack, SubmitNodeCollector nodeCollector) {
         BlockState state = level.getBlockState(pos);
         if (!state.hasProperty(VaultBlock.STATE) || !isInRange(pos, camera)) {
             return;
@@ -73,32 +73,32 @@ public final class TrackerLabels {
         boolean opened = TrackerSession.isVaultOpened(level, pos);
         String key = VAULT_KEY + (ominous ? "ominous_" : "") + (opened ? "opened" : "ready");
         int color = opened ? OPENED_COLOR : ominous ? OMINOUS_READY_COLOR : READY_COLOR;
-        draw(poseStack, bufferSource, camera, pos, Component.translatable(key), color);
+        draw(poseStack, nodeCollector, camera, pos, Component.translatable(key), color);
     }
 
-    private static boolean isInRange(BlockPos pos, Camera camera) {
+    private static boolean isInRange(BlockPos pos, CameraRenderState camera) {
         int range = ClientConfig.displayRange();
-        return camera.getPosition().distanceToSqr(Vec3.atCenterOf(pos)) <= (double) range * range;
+        return camera.pos.distanceToSqr(Vec3.atCenterOf(pos)) <= (double) range * range;
     }
 
-    private static void draw(PoseStack poseStack, MultiBufferSource bufferSource, Camera camera, BlockPos pos, Component text, int color) {
+    private static void draw(PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera, BlockPos pos, Component text, int color) {
         Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;
-        Vec3 cameraPos = camera.getPosition();
+        Vec3 cameraPos = camera.pos;
         poseStack.pushPose();
         poseStack.translate(pos.getX() + 0.5 - cameraPos.x, pos.getY() + LABEL_HEIGHT - cameraPos.y, pos.getZ() + 0.5 - cameraPos.z);
-        poseStack.mulPose(camera.rotation());
+        poseStack.mulPose(camera.orientation);
         poseStack.scale(TEXT_SCALE, -TEXT_SCALE, TEXT_SCALE);
         int background = (int) (minecraft.options.getBackgroundOpacity(0.25F) * 255.0F) << 24;
         float x = -font.width(text) / 2.0F;
         if (ClientConfig.showThroughBlocks()) {
-            font.drawInBatch(text, x, 0.0F, color & 0xFFFFFF | SEE_THROUGH_ALPHA, false, poseStack.last().pose(), bufferSource,
-                    Font.DisplayMode.SEE_THROUGH, background, LightTexture.FULL_BRIGHT);
-            font.drawInBatch(text, x, 0.0F, color, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0,
-                    LightTexture.FULL_BRIGHT);
+            nodeCollector.submitText(poseStack, x, 0.0F, text.getVisualOrderText(), false, Font.DisplayMode.SEE_THROUGH,
+                    LightTexture.FULL_BRIGHT, color & 0xFFFFFF | SEE_THROUGH_ALPHA, background, 0);
+            nodeCollector.submitText(poseStack, x, 0.0F, text.getVisualOrderText(), false, Font.DisplayMode.NORMAL,
+                    LightTexture.FULL_BRIGHT, color, 0, 0);
         } else {
-            font.drawInBatch(text, x, 0.0F, color, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, background,
-                    LightTexture.FULL_BRIGHT);
+            nodeCollector.submitText(poseStack, x, 0.0F, text.getVisualOrderText(), false, Font.DisplayMode.NORMAL,
+                    LightTexture.FULL_BRIGHT, color, background, 0);
         }
         poseStack.popPose();
     }

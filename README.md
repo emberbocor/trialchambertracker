@@ -41,12 +41,12 @@ Servers only send part of the trial spawner and vault data to the client. The mo
 
 | | NeoForge | Forge | Fabric |
 |---|---|---|---|
-| Minecraft | 1.21.1 | 1.21.1 | 1.21 or 1.21.1 |
-| Loader | NeoForge 21.1.1 or newer | Forge 52.0.0 or newer | Fabric Loader 0.15.11 or newer |
-| Other | | | Fabric API 0.102.0 or newer |
-| Jar | `trialchambertracker-neoforge-1.21.1-<version>.jar` | `trialchambertracker-forge-1.21.1-<version>.jar` | `trialchambertracker-fabric-1.21-1.21.1-<version>.jar` |
+| Minecraft | 1.21.11 | 1.21.11 | 1.21.11 |
+| Loader | NeoForge 21.11.42 or newer | Forge 61.0.1 or newer | Fabric Loader 0.17.3 or newer |
+| Other | | | Fabric API 0.139.5 or newer |
+| Jar | `trialchambertracker-neoforge-1.21.11-<version>.jar` | `trialchambertracker-forge-1.21.11-<version>.jar` | `trialchambertracker-fabric-1.21.11-<version>.jar` |
 
-On Minecraft 1.21.1, NeoForge and Forge are separate loaders that do not run each other's mods, so each has its own jar. Pick the jar that matches your loader.
+On Minecraft 1.21.11, NeoForge and Forge are separate loaders that do not run each other's mods, so each has its own jar. Pick the jar that matches your loader.
 
 ### Client and server
 
@@ -92,6 +92,10 @@ Singleplayer worlds are identified by their folder name in `saves/`, servers by 
 
 - Works with any mod that keeps the vanilla trial spawner and vault blocks. Trial spawners and vaults added by other mods as different blocks get no labels.
 - Mods or server plugins that reset vaults or change cooldowns are handled by the self-correction described above; a changed cooldown length is learned as described under "Cooldown timer".
+
+### Upgrading a world from 1.21.1
+
+Use the 1.21.11 jar for your loader. Keep `config/trialchambertracker-client.json` and the `trialchambertracker/` folder in the same game folder: their format is unchanged. A world kept under the same save folder name, or a server reached through the same address, keeps its learned cooldown length, known cooldown starts and opened vaults.
 
 ## Building from source
 

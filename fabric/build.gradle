@@ -3,10 +3,6 @@ plugins {
     id 'fabric-loom'
 }
 
-base {
-    archivesName = "${mod_id}-${project.name}-${fabric_minecraft_label}"
-}
-
 repositories {
     exclusiveContent {
         forRepository {
@@ -35,13 +31,13 @@ loom {
             client()
             configName = 'Fabric Client'
             ideConfigGenerated(true)
-            runDir('../runs/1.21.1/fabric-client')
+            runDir('../runs/1.21.11/fabric-client')
         }
         server {
             server()
             configName = 'Fabric Server'
             ideConfigGenerated(true)
-            runDir('../runs/1.21.1/fabric-server')
+            runDir('../runs/1.21.11/fabric-server')
         }
     }
 }
